@@ -72,8 +72,9 @@ class baseVinyl
 		void   sortName();
 		void   sortPrice();
 		void   sortDate();
-		bool   searchPrice(float min, float max);	//lepszy bylby int - kod błędu
+		int    searchPrice(float min, float max);	//lepszy bylby int - kod błędu
 		bool   searchName(char searchedName[]);	//j.w.
+		int    searchArtist(char searchedArtist[]);
 		int	   getQuantityFound();
 		int	   getCurrentFound();
 		vinyl  getVinylFound(int i);
@@ -496,26 +497,33 @@ void baseVinyl::sortName()
 }		
 
 
-bool baseVinyl::searchPrice(float min, float max)
+int baseVinyl::searchPrice(float min, float max)
 {
 	quantityFound=0;
 	currentFound=-1;
 	found.erase( found.begin(), found.end() );
-	for(int i=0; i<quantity; i++)
-	{
-		if(tab[i].getPrice()>=min && tab[i].getPrice()<=max)
-		{
-			found.push_back(tab[i]);
-			quantityFound++;
-		}
-	}
-	if (quantityFound>0)
-	{
-		currentFound=0;
-		return 1;
-	}
+	if(min<=0)
+		return 2;
+	else if(max>=2000000)
+		return 3;
 	else
-		return 0;	
+	{
+		for(int i=0; i<quantity; i++)
+		{
+			if(tab[i].getPrice()>=min && tab[i].getPrice()<=max)
+			{
+				found.push_back(tab[i]);
+				quantityFound++;
+			}
+		}
+		if (quantityFound>0)
+		{
+			currentFound=0;
+			return 1;
+		}
+		else
+			return 0;	
+	}
 }
 
 
@@ -527,6 +535,29 @@ bool baseVinyl::searchName(char searchedName[])
 	for (int i=0; i<quantity; i++)
 	{
 		if ( strcmp( tab[i].getName(), searchedName )==0 )
+		{
+			found.push_back(tab[i]);
+			quantityFound++;
+		}
+	}
+	if (quantityFound>0)
+	{
+		currentFound=0;
+		return 1;
+	}
+	else
+		return 0;
+}
+
+
+int baseVinyl::searchArtist(char searchedArtist[])
+{
+	quantityFound=0;
+	currentFound=-1;
+	found.erase( found.begin(), found.end() );
+	for (int i=0; i<quantity; i++)
+	{
+		if ( strcmp( tab[i].getArtist(), searchedArtist )==0 )
 		{
 			found.push_back(tab[i]);
 			quantityFound++;
@@ -643,12 +674,11 @@ main()
 		cout<<"5. Save to File"<<endl;
 		cout<<"6. Read to File"<<endl;
 		cout<<"a. Browse through the table."<<endl;
-		cout<<"c. Set Current"<<endl;
-		cout<<"d. Finish"<<endl;
-		cout<<"f. Sorting"<<endl;
-		cout<<"S. Search Cena"<<endl;
-		cout<<"N. Search Nazwa"<<endl;
-		cout<<"C. Browse through found elements."<<endl;
+		cout<<"b. Set Current"<<endl;
+		cout<<"c. Sorting"<<endl;
+		cout<<"d. Searching"<<endl;
+		cout<<"e. Browse through found elements."<<endl;
+		cout<<"f. Finish"<<endl;
 
 		zn=getch();
 
@@ -705,13 +735,13 @@ main()
 				cout<<"------------------------------------------------------------------------------"<<endl<<endl;
 				for(i=0; i<base.getQuantity(); i++) 
 				{
-					cout<<"|Artist: "<<base.getVinyl(i).getArtist()<<endl;
-					cout<<"|Name: "<<base.getVinyl(i).getName()<<endl;
-					cout<<"|Edition: "<<base.getVinyl(i).getEdition()<<endl;
-					cout<<"|Distributor: "<<base.getVinyl(i).getDistributor()<<endl;
-					cout<<"|Price: "<<base.getVinyl(i).getPrice()<<endl;
-					cout<<"|Condition: "<<base.getVinyl(i).getCondition()<<endl;
-					cout<<"|Date: "<<base.getVinyl(i).getDay()<<"."<<base.getVinyl(i).getMonth()<<"."<<base.getVinyl(i).getYear()<<endl<<endl;
+					cout<<"|Artist: \033[35m"<<base.getVinyl(i).getArtist()<<"\033[0m"<<endl;
+					cout<<"|Name: \033[35m"<<base.getVinyl(i).getName()<<"\033[0m"<<endl;
+					cout<<"|Edition: \033[35m"<<base.getVinyl(i).getEdition()<<"\033[0m"<<endl;
+					cout<<"|Distributor: \033[35m"<<base.getVinyl(i).getDistributor()<<"\033[0m"<<endl;
+					cout<<"|Price: \033[35m"<<base.getVinyl(i).getPrice()<<"\033[0m"<<endl;
+					cout<<"|Condition: \033[35m"<<base.getVinyl(i).getCondition()<<"\033[0m"<<endl;
+					cout<<"|Date: \033[35m"<<base.getVinyl(i).getDay()<<"."<<base.getVinyl(i).getMonth()<<"."<<base.getVinyl(i).getYear()<<"\033[0m"<<endl<<endl;
 				}
 				cout<<"------------------------------------------------------------------------------"<<endl;
 				cout<<"Click ENTER to proceed.";
@@ -780,14 +810,14 @@ main()
 								i=base.getCurrent();
 								break;	
 							case 'c':
+								system("cls");
 								cout<<"Do you want to change the whole index or one of the categories?"<<endl;
-								cout<<"1 - all  2 - artist  3 - edition  4 - distributor  5 - price  6 - condition  7 - date  8 - leave";
+								cout<<"1 - all  2 - artist 3 - name 4 - edition  5 - distributor  6 - price  7 - condition  8 - date  9 - leave";
 								zn=getch();
 								system("cls");
 								switch(zn)
 								{
 									case '1':
-										cin.ignore();
 										cout<<"Artist: ";
 										gets(art);
 										base.getTab().setArtist(art);
@@ -834,27 +864,34 @@ main()
 										getchar();
 										break;
 									case '4':
+										cout<<"Edition: ";
+										gets(edt);
+										base.getTab().setEdition(edt);
+										cout<<endl<<"Changed! Press ENTER to continue";
+										getchar();
+										break;
+									case '5':
 										cout<<"Distributor: ";
 										gets(dist);
 										base.getTab().setDistributor(dist);
 										cout<<endl<<"Changed! Press ENTER to continue";
 										getchar();
 										break;
-									case '5':
+									case '6':
 										cout<<"Price: ";
 										cin>>pr;
 										base.getTab().setPrice(pr);
 										cout<<endl<<"Changed! Press ENTER to continue";
 										getchar();
 										break;
-									case '6':
+									case '7':
 										cout<<"Condition: ";
 										gets(cond);
 										base.getTab().setCondition(cond);
 										cout<<endl<<"Changed! Press ENTER to continue";
 										getchar();
 										break;
-									case '7':
+									case '8':
 										cout<<"Date(dd-mm-yyy): ";
 										cin>>d;
 										cin.ignore();
@@ -866,7 +903,7 @@ main()
 										cout<<endl<<"Changed! Press ENTER to continue";
 										getchar();
 										break;
-									case '8':
+									case '9':
 										break;
 								}
 								break;
@@ -888,7 +925,7 @@ main()
 				}
 				break;
 				
-			case 'c':
+			case 'b':
 				cout<<"Index of the element: ";
 				cin>>i;
 				base.setCurrent(i);
@@ -913,7 +950,7 @@ main()
 				}
 				break;
 				
-			case 'd':
+			case 'f':
 				cout<<"Are you sure you want to leave? (Remember to save your work!)."<<endl<<endl;
 				cout<<"n - NO			ESC - leave";
 				zn=getch();
@@ -929,7 +966,7 @@ main()
 				}
 				break;
 				
-			case 'f': 
+			case 'c': 
 				system("cls");
 				cout<<"By which category you want to sort?"<<endl;
 				cout<<"1 - Sort by name"<<endl;
@@ -940,16 +977,19 @@ main()
 				switch(zn)
 				{
 					case '1':
+						system("cls");
 						base.sortPrice();
 						cout<<"Sorted. Click ENTER to proceed.";
 						getchar();
 						break;
 					case '2':
+						system("cls");
 						base.sortName();
 						cout<<"Sorted. Click ENTER to proceed.";
 						getchar();
 						break;
 					case '3':
+						system("cls");
 						base.sortDate();
 						cout<<"Sorted. Click ENTER to proceed.";
 						getchar();
@@ -959,17 +999,75 @@ main()
 				}
 				break;	
 					
-			case 'g': 
-				base.sortName();
-				cout<<"Sorted. Click ENTER to proceed.";
-				getchar();
-				break;
-			case 'h':
-				base.sortDate();
-				cout<<"Sorted. Click ENTER to proceed.";
-				getchar();
-				break;
-			case 'C':	
+			case 'd': 
+				system("cls");
+				cout<<"What do you want to search for?"<<endl;
+				cout<<"1 - Search for an artist"<<endl;
+				cout<<"2 - Search for a name"<<endl;
+				cout<<"3 - Search for a price range"<<endl;
+				cout<<"l - leave"<<endl;
+				zn=getch();
+				switch(zn)
+				{
+					case '1':
+						system("cls");
+						cout<<"Artist: ";
+						fflush(stdin);
+						gets(search);
+						i=base.searchArtist(search);
+						if(i==0)
+							cout<<"Not found.";
+						else
+							cout<<"Found. Click ENTER to proceed.";
+						getchar();
+						break;
+					case '2':
+						system("cls");
+						cout<<"Name: ";
+						fflush(stdin);
+						gets(search);
+						i=base.searchName(search);
+						if(i==0)
+							cout<<"Not found.";
+						else
+							cout<<"Found. Click ENTER to proceed.";
+						getchar();
+						break;
+					case '3':
+						system("cls");
+						cout<<"Min: ";
+						cin>>min;
+						cout<<"Max: ";
+						cin>>max;
+						i=base.searchPrice(min,max);
+						if(i==1)
+						{
+							cout<<"Found. Click ENTER to proceed.";
+							getchar();
+						}
+						else if(i==2)
+						{
+							cout<<"Minimum too low! Click ENTER to proceed and try again.";
+							getchar();
+						}
+						else if(i==3)
+						{
+							cout<<"Maximum too high! Click ENTER to proceed and try again.";
+							getchar();
+						}
+						else
+						{
+							cout<<"Nothing found. Click ENTER to proceed.";
+							getchar();
+						}
+						getchar();
+						break;
+					case 'l':
+						break;
+				}
+				break;	
+				
+			case 'e':	
 			i=base.getCurrentFound();
 				if (i==-1)
 				{
@@ -1010,29 +1108,6 @@ main()
 						}
 					}while(zn!='l');
 				}
-				break;
-			case 'S':	
-				cout<<"Min: ";
-				cin>>min;
-				cout<<"Max: ";
-				cin>>max;
-				i=base.searchPrice(min,max);
-				if(i==0)
-					cout<<"Not found.";
-				else
-					cout<<"Found. Click ENTER to proceed.";
-				getchar();
-				break;
-			case 'N':
-				cout<<"Nazwa: ";
-				fflush(stdin);
-				gets(search);
-				i=base.searchName(search);
-				if(i==0)
-					cout<<"Not found.";
-				else
-					cout<<"Found. Click ENTER to proceed.";
-				getchar();
 				break;
 		}
 		
