@@ -47,10 +47,14 @@ class baseVinyl
 	protected:
 		int quantity;
 		int quantityFound;
+		int quantityTrash;
 		int current; //indeks elementu aktualnego, dziedzina: liczby
 		int currentFound; //wartość -1 oznacza brak elementu aktualnego
+		int currentTrash;
 		vector <vinyl> tab;
 		vector <vinyl> found;
+		vector <int>   indexes;
+		vector <vinyl> trash;
 	private:
 		int i; //bardziej uniwersalnym rozwiązaniem jest deklarowanie lokalnego 'i' w metodach
 	public:
@@ -68,19 +72,29 @@ class baseVinyl
 		void   previous();
 		int    getCurrent();
 		void   deleteCurrent();
-		void   deleteCurrentv2();
 		void   sortName();
 		void   sortPrice();
 		void   sortDate();
 		int    searchPrice(float min, float max);	//lepszy bylby int - kod błędu
 		bool   searchName(char searchedName[]);	//j.w.
 		int    searchArtist(char searchedArtist[]);
+//Znalezione
 		int	   getQuantityFound();
 		int	   getCurrentFound();
 		vinyl  getVinylFound(int i);
 		vinyl  getFound();
 		void   nextFound();
 		void   previousFound();
+		int    getIndex();	
+		void   deleteCurrentFound();
+//Kosz
+		int    getQuantityTrash();
+		int    getCurrentTrash();
+		vinyl  getVinylTrash(int i);
+		vinyl  getTrash();
+		void   nextTrash();
+		void   previousTrash();
+		void   deleteCurrentTrash();
 };
 
 
@@ -506,6 +520,8 @@ int baseVinyl::searchPrice(float min, float max)
 		return 2;
 	else if(max>=2000000)
 		return 3;
+	else if(min>max)
+		return 4;
 	else
 	{
 		for(int i=0; i<quantity; i++)
@@ -513,6 +529,7 @@ int baseVinyl::searchPrice(float min, float max)
 			if(tab[i].getPrice()>=min && tab[i].getPrice()<=max)
 			{
 				found.push_back(tab[i]);
+				indexes.push_back(i);
 				quantityFound++;
 			}
 		}
@@ -537,6 +554,7 @@ bool baseVinyl::searchName(char searchedName[])
 		if ( strcmp( tab[i].getName(), searchedName )==0 )
 		{
 			found.push_back(tab[i]);
+			indexes.push_back(i);
 			quantityFound++;
 		}
 	}
@@ -560,6 +578,7 @@ int baseVinyl::searchArtist(char searchedArtist[])
 		if ( strcmp( tab[i].getArtist(), searchedArtist )==0 )
 		{
 			found.push_back(tab[i]);
+			indexes.push_back(i);
 			quantityFound++;
 		}
 	}
@@ -581,7 +600,7 @@ vinyl baseVinyl::getVinylFound(int i)
 
 vinyl baseVinyl::getFound()
 {
-	return found.at(current);
+	return found.at(currentFound);
 }
 
 
@@ -608,6 +627,20 @@ void baseVinyl::previousFound()
 {
 	if(currentFound>0)
 		currentFound--;
+}
+
+
+void baseVinyl::deleteCurrentFound()
+{
+	tab.erase(tab.begin() + indexes[currentFound]);
+	indexes.erase(indexes.begin() + currentFound);
+	if(current==quantity-1)
+		current--;
+	quantity--;
+	found.erase(found.begin() + currentFound);
+	if(currentFound==quantityFound-1)
+		currentFound--;
+	quantityFound--;
 }
 
 
@@ -649,7 +682,7 @@ void writeVinylXY(vinyl t, int x, int y)
 	gotoxy(x+25, y+4);
 	cout<<t.getDistributor();
 	gotoxy(x+25, y+5);
-	cout<<t.getPrice();
+	cout<<t.getPrice()<<" euro";
 	gotoxy(x+25, y+6);
 	cout<<t.getCondition();
 	gotoxy(x+25, y+7);
@@ -739,7 +772,7 @@ main()
 					cout<<"|Name: \033[35m"<<base.getVinyl(i).getName()<<"\033[0m"<<endl;
 					cout<<"|Edition: \033[35m"<<base.getVinyl(i).getEdition()<<"\033[0m"<<endl;
 					cout<<"|Distributor: \033[35m"<<base.getVinyl(i).getDistributor()<<"\033[0m"<<endl;
-					cout<<"|Price: \033[35m"<<base.getVinyl(i).getPrice()<<"\033[0m"<<endl;
+					cout<<"|Price: \033[35m"<<base.getVinyl(i).getPrice()<<" EURO\033[0m"<<endl;
 					cout<<"|Condition: \033[35m"<<base.getVinyl(i).getCondition()<<"\033[0m"<<endl;
 					cout<<"|Date: \033[35m"<<base.getVinyl(i).getDay()<<"."<<base.getVinyl(i).getMonth()<<"."<<base.getVinyl(i).getYear()<<"\033[0m"<<endl<<endl;
 				}
@@ -796,6 +829,12 @@ main()
 					do
 					{
 						system("cls");
+						if (base.getCurrent()==-1)
+						{
+							cout<<"No elements. Click ENTER to proceed."<<endl;
+							getchar();
+							break;
+						}
 						writeVinylXY(base.getVinyl(i), 5, 10);
 						cout<<endl<<"    a - previous   b - next   c - change index    d - delete    l - leave";
 						zn=getch();
@@ -908,7 +947,7 @@ main()
 								}
 								break;
 							case 'd':
-								cout<<endl<<"        Are you sure you want to delete current index?"<<endl<<"y - yes           n - no"<<endl;
+								cout<<endl<<endl<<"        Are you sure you want to delete current index?"<<endl<<"y - yes           n - no"<<endl;
 								zn=getch();
 								switch(zn)
 								{
@@ -1055,6 +1094,11 @@ main()
 							cout<<"Maximum too high! Click ENTER to proceed and try again.";
 							getchar();
 						}
+						else if(i==4)
+						{
+							cout<<"Maximum is lower than minimum! Click ENTER to proceed and try again.";
+							getchar();
+						}	
 						else
 						{
 							cout<<"Nothing found. Click ENTER to proceed.";
@@ -1079,8 +1123,14 @@ main()
 					do
 					{
 						system("cls");
+						if(base.getCurrentFound()==-1)
+						{
+							cout<<"No elements. Click ENTER to leave.";
+							getch();
+							break;
+						}
 						writeVinylXY(base.getVinylFound(i), 5, 10);
-						cout<<endl<<"    a - previous                    b - next          d - delete         l - leave";
+						cout<<endl<<"    a - previous                    b - next          d - delete index      t - delete all indexes    l - leave";
 						zn=getch();
 						switch(zn)
 						{
@@ -1092,7 +1142,7 @@ main()
 								base.nextFound();
 								i=base.getCurrentFound();
 								break;	
-							/*case 'd':
+							case 'd':
 								cout<<endl<<"Are you sure you want to delete current index?"<<endl<<"y - yes           n - no"<<endl;
 								zn=getch();
 								switch(zn)
@@ -1104,7 +1154,22 @@ main()
 										break;
 									case 'n':
 										break;
-								}*/
+								}
+							case 't':
+								cout<<endl<<"Are you sure you want to delete all found data?"<<endl<<"y - yes           n - no"<<endl;
+								zn=getch();
+								switch(zn)
+								{
+									case 'y':
+										for(i=0;i<=base.getQuantityFound();i++)
+										{
+											base.deleteCurrentFound();
+										}
+										cout<<"Deleted. Click ENTER to proceed.";
+										break;
+									case 'n':
+										break;
+								}
 						}
 					}while(zn!='l');
 				}
