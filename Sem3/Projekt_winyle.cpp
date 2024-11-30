@@ -71,7 +71,7 @@ class baseVinyl
 		void   next(); //zamiast void lepiej bool lub w int w 4 metodach
 		void   previous();
 		int    getCurrent();
-		void   deleteCurrent();
+		void   deleteCurrent(int i);
 		void   sortName();
 		void   sortPrice();
 		void   sortDate();
@@ -95,6 +95,7 @@ class baseVinyl
 		void   nextTrash();
 		void   previousTrash();
 		void   deleteCurrentTrash();
+		void   addBackTrash(int i);
 };
 
 
@@ -316,6 +317,8 @@ baseVinyl::baseVinyl()
 	current=-1;
 	quantityFound=0;
 	currentFound=-1;
+	quantityTrash=0;
+	currentTrash=-1;
 }
 
 void baseVinyl::clearAll() 
@@ -423,8 +426,11 @@ int baseVinyl::getCurrent()
 	return current;
 }
 
-void baseVinyl::deleteCurrent() 
+void baseVinyl::deleteCurrent(int i) 
 {
+	trash.push_back(tab[i]);
+	quantityTrash++;
+	currentTrash=0;
 	if(quantity>=1)
 	{
 		tab.erase(tab.begin() + current);
@@ -632,6 +638,9 @@ void baseVinyl::previousFound()
 
 void baseVinyl::deleteCurrentFound()
 {
+	trash.push_back(found[i]);
+	quantityTrash++;
+	currentTrash=0;
 	tab.erase(tab.begin() + indexes[currentFound]);
 	indexes.erase(indexes.begin() + currentFound);
 	if(current==quantity-1)
@@ -641,6 +650,64 @@ void baseVinyl::deleteCurrentFound()
 	if(currentFound==quantityFound-1)
 		currentFound--;
 	quantityFound--;
+}
+
+
+int baseVinyl::getQuantityTrash()
+{
+	return quantityTrash;
+}
+
+
+int baseVinyl::getCurrentTrash()
+{
+	return currentTrash;
+}
+
+
+vinyl baseVinyl::getVinylTrash(int i)
+{
+	return trash[i];	
+}
+
+
+vinyl baseVinyl::getTrash()
+{
+	return trash.at(currentFound);
+}
+
+
+void baseVinyl::nextTrash()
+{
+	if(currentTrash<quantityTrash-1)
+		currentTrash++;
+}
+
+
+void baseVinyl::previousTrash()
+{
+	if(currentTrash>0)
+		currentTrash--;
+}
+
+
+void baseVinyl::deleteCurrentTrash()
+{
+	trash.erase(trash.begin() + currentTrash);
+	if(currentTrash==quantityTrash-1)
+		currentTrash--;
+	quantityTrash--;
+}
+		
+
+void baseVinyl::addBackTrash(int i)
+{
+	tab.push_back(trash[i]);
+	quantity++;
+	trash.erase(trash.begin() + currentTrash);
+	if(currentTrash==quantityTrash-1)
+		currentTrash--;
+	quantityTrash--;
 }
 
 
@@ -952,7 +1019,8 @@ main()
 								switch(zn)
 								{
 									case 'y':
-										base.deleteCurrent();
+										i=base.getCurrent();
+										base.deleteCurrent(i);
 										cout<<"Deleted.";
 										i=base.getCurrent();
 										break;
@@ -1174,6 +1242,75 @@ main()
 					}while(zn!='l');
 				}
 				break;
+			
+			case 'p':
+			i=base.getCurrentTrash();
+			if (i==-1)
+			{
+				cout<<"No elements. Click ENTER to proceed."<<endl;
+				getchar();
+			}
+			else
+			{
+				do
+				{
+					system("cls");
+					if(base.getCurrentTrash()==-1)
+					{
+						cout<<"No elements. Click ENTER to leave.";
+						getch();
+						break;
+					}
+					writeVinylXY(base.getVinylTrash(i), 5, 10);
+					cout<<endl<<"    a - previous          b - next        d - delete index      t - delete all indexes   j - add back   l - leave";
+					zn=getch();
+					switch(zn)
+					{
+						case 'a':
+							base.previousTrash();
+							i=base.getCurrentTrash();
+							break;
+						case 'b':
+							base.nextTrash();
+							i=base.getCurrentTrash();
+							break;	
+						case 'd':
+							cout<<endl<<"Are you sure you want to delete current index?"<<endl<<"y - yes           n - no"<<endl;
+							zn=getch();
+							switch(zn)
+							{
+								case 'y':
+									base.deleteCurrentTrash();
+									cout<<"Deleted.";
+									i=base.getCurrentTrash();
+									break;
+								case 'n':
+									break;
+							}
+						case 't':
+							cout<<endl<<"Are you sure you want to delete all found data?"<<endl<<"y - yes           n - no"<<endl;
+							zn=getch();
+							switch(zn)
+							{
+								case 'y':
+									for(i=0;i<=base.getQuantityTrash();i++)
+									{
+										base.deleteCurrentTrash();
+									}
+									cout<<"Deleted. Click ENTER to proceed.";
+									break;
+								case 'n':
+									break;
+							}
+						case 'j':
+							base.addBackTrash(i);
+							cout<<endl<<"Added back. Click ENTER to proceed.";
+							getchar();
+							break;
+					}
+				}while(zn!='l');
+			}
+			break;	
 		}
 		
 	} while(zn!=27);
