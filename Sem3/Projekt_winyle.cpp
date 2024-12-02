@@ -104,6 +104,7 @@ class baseVinyl
 
 void gotoxy(int x, int y);
 void writeVinylXY(vinyl t, int x, int y); //lepiej 2 metody (etykiety i wartosci - oddzielnie)
+void baner(int x, int y);
 
 
 //metody towar:
@@ -794,6 +795,26 @@ void writeVinylXY(vinyl t, int x, int y)
 	cout<<t.getDay()<<"."<<t.getMonth()<<"."<<t.getYear()<<endl;
 }
 
+void baner(int x, int y)
+{
+	cout<<" __      __  _                   _ ";  
+	cout<<"       _____         _   _                 _     _"<<endl;
+    cout<<" \\ \\    / / (_)                 | |";
+	cout<<"      / ____|       | | | |               | |   (_)"<<endl;
+    cout<<"  \\ \\  / /   _   _ __    _   _  | |";
+    cout<<"     | |       ___  | | | |    _     ___  | |_   _    ___    _ __"<<endl;
+    cout<<"   \\ \\/ /   | | | '_ \\  | | | | | |";
+	cout<<"     | |      / _ \\ | | | |  / _ \\  / __/ | __| | |  / _ \\  | '_ \\ "<<endl;
+    cout<<"    \\  /    | | | | | | | |_| | | |";
+	cout<<"     | |____ | (_) || | | | |  __/ / (__  | |_  | | | (_) | | | | |"<<endl;
+    cout<<"     \\/     |_| |_| |_|  \\__, | |_|";
+	cout<<"      \\_____| \\___/ |_| |_|  \\___|  \\___\\  \\__| |_|  \\___/  |_| |_|"<<endl;
+    cout<<"                          __/ |"<<endl;
+    cout<<"                         |___/"<<endl;	
+}
+
+
+
 main() 
 {
 	char art[50], nam[20], edt[30], dist[40], cond[10], zn, search[50];
@@ -805,6 +826,7 @@ main()
 	do 
 	{
 		system("CLS");
+		baner(0,0);
 		cout<<endl<<"1. Clear all"<<endl;
 		cout<<"2. Add new"<<endl;
 		cout<<"3. Show the whole table"<<endl;
@@ -816,6 +838,7 @@ main()
 		cout<<"c. Sorting"<<endl;
 		cout<<"d. Searching"<<endl;
 		cout<<"e. Browse through found elements."<<endl;
+		cout<<"g. Search and change."<<endl;
 		cout<<"p. Trashbin"<<endl;
 		cout<<"f. Finish"<<endl;
 
