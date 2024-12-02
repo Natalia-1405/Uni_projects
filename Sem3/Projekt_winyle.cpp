@@ -86,7 +86,8 @@ class baseVinyl
 		void   nextFound();
 		void   previousFound();
 		int    getIndex();	
-		void   deleteCurrentFound();
+		void   deleteCurrentFound(int i);
+		void   deleteAllFound();
 //Kosz
 		int    getQuantityTrash();
 		int    getCurrentTrash();
@@ -428,9 +429,10 @@ int baseVinyl::getCurrent()
 
 void baseVinyl::deleteCurrent(int i) 
 {
-	trash.push_back(tab[i]);
+	trash.push_back(tab[current]);
 	quantityTrash++;
-	currentTrash=0;
+	if(currentTrash==-1)
+		currentTrash=0;
 	if(quantity>=1)
 	{
 		tab.erase(tab.begin() + current);
@@ -636,20 +638,54 @@ void baseVinyl::previousFound()
 }
 
 
-void baseVinyl::deleteCurrentFound()
+void baseVinyl::deleteCurrentFound(int i)
 {
-	trash.push_back(found[i]);
+	trash.push_back(found[currentFound]);
 	quantityTrash++;
-	currentTrash=0;
+	if(currentTrash==-1)
+		currentTrash=0;
 	tab.erase(tab.begin() + indexes[currentFound]);
 	indexes.erase(indexes.begin() + currentFound);
 	if(current==quantity-1)
 		current--;
 	quantity--;
-	found.erase(found.begin() + currentFound);
-	if(currentFound==quantityFound-1)
-		currentFound--;
-	quantityFound--;
+	if(quantityFound>=1)
+	{
+		found.erase(found.begin() + currentFound);
+		if(currentFound==quantityFound-1)
+			currentFound--;
+		quantityFound--;
+	}
+	int q=quantityFound;
+	if(currentFound<quantityFound-1)
+	{
+		for(i=0;i<q;i++)
+		{
+			indexes[i]=indexes[i]-1;
+		}
+	}
+}
+
+void baseVinyl::deleteAllFound()
+{
+	currentFound=quantityFound-1;
+	int q=quantityFound;	
+	for(i=q; i>0; i--)
+	{
+		trash.push_back(found[currentFound]);
+		quantityTrash++;
+		if(currentTrash==-1)
+			currentTrash=0;
+		tab.erase(tab.begin() + indexes[currentFound]);
+		indexes.erase(indexes.begin() + currentFound);
+		if(current==quantity-1)
+			current--;
+		quantity--;
+		found.erase(found.begin() + currentFound);
+		if(currentFound==quantityFound-1)
+			currentFound--;
+		quantityFound--;
+	}
 }
 
 
@@ -704,6 +740,8 @@ void baseVinyl::addBackTrash(int i)
 {
 	tab.push_back(trash[i]);
 	quantity++;
+	if(current==-1)
+		current=0;
 	trash.erase(trash.begin() + currentTrash);
 	if(currentTrash==quantityTrash-1)
 		currentTrash--;
@@ -778,6 +816,7 @@ main()
 		cout<<"c. Sorting"<<endl;
 		cout<<"d. Searching"<<endl;
 		cout<<"e. Browse through found elements."<<endl;
+		cout<<"p. Trashbin"<<endl;
 		cout<<"f. Finish"<<endl;
 
 		zn=getch();
@@ -1027,6 +1066,7 @@ main()
 									case 'n':
 										break;
 								}
+								break;
 						}
 					}while(zn!='l');
 				}
@@ -1216,28 +1256,29 @@ main()
 								switch(zn)
 								{
 									case 'y':
-										base.deleteCurrentFound();
+										base.deleteCurrentFound(i);
 										cout<<"Deleted.";
 										i=base.getCurrentFound();
 										break;
 									case 'n':
 										break;
 								}
+								break;
 							case 't':
 								cout<<endl<<"Are you sure you want to delete all found data?"<<endl<<"y - yes           n - no"<<endl;
 								zn=getch();
 								switch(zn)
 								{
 									case 'y':
-										for(i=0;i<=base.getQuantityFound();i++)
-										{
-											base.deleteCurrentFound();
-										}
+										cout<<base.getQuantityFound();
+										getchar();
+										base.deleteAllFound();
 										cout<<"Deleted. Click ENTER to proceed.";
 										break;
 									case 'n':
 										break;
 								}
+								break;
 						}
 					}while(zn!='l');
 				}
