@@ -10,8 +10,8 @@ class vinyl
 {
 	protected:			//private:
 		char artist[50];
-		char name[20];
-		char edition[30];
+		char name[40];
+		char edition[40];
 		char distributor[40];
 		float price;
 		char condition[5];
@@ -27,7 +27,7 @@ class vinyl
 		void  setDistributor(char *dist);
 		bool  setPrice(float pr);
 		void  setCondition(char *cond);
-		bool  setDate(int yr, int mon, int d);
+		int   setDate(int yr, int mon, int d);
 		void  clear();
 		void  download(char* art, char* nam, char *edt, char *dist, float pr, char *cond);
 		char* getArtist();
@@ -59,7 +59,7 @@ class baseVinyl
 		int i; //bardziej uniwersalnym rozwiązaniem jest deklarowanie lokalnego 'i' w metodach
 	public:
 		baseVinyl();
-		void   addNew(char* art, char* nam, char *edt, char *dist, float pr, char *cond, int yr, int mon, int d);
+		int    addNew(char* art, char* nam, char *edt, char *dist, float pr, char *cond, int yr, int mon, int d);
 		void   clearAll();
 		vinyl  getVinyl(int i);
 		vinyl& getTab();
@@ -78,6 +78,9 @@ class baseVinyl
 		int    searchPrice(float min, float max);	//lepszy bylby int - kod błędu
 		bool   searchName(char searchedName[]);	//j.w.
 		int    searchArtist(char searchedArtist[]);
+		void   changeCondition(char oldCond[], char newCond[]);
+		int    changePricePercent(float percent, float min, float max);
+		int    changePriceNumber(float newPrice, float min, float max);
 //Znalezione
 		int	   getQuantityFound();
 		int	   getCurrentFound();
@@ -194,24 +197,36 @@ void vinyl::setCondition(char *cond)
 }
 
 
-bool vinyl::setDate(int yr, int mon, int d)
+int vinyl::setDate(int yr, int mon, int d)
 {
 	if (yr>=1930 && yr<=2024) 
 		year=yr;
 	else
+	{
+		year=0;
+		month=0;
+		day=0;
 		return 0;
+	}
 	
 	if(mon>=1 && mon<=12)
 		month=mon;
 	else
-		return 0;	
+	{
+		month=0;
+		day=0;
+		return 1;
+	}	
 	
 	if(mon==1 || mon==3 || mon==5 || mon==7 || mon==8 || mon==10 || mon==12)
 	{
 		if (d>=1 && d<=31)
 			day=d;
 		else
-			return 0;
+		{
+			day=0;
+			return 2;
+		}
 	}
 	else if(mon==2)
 	{
@@ -220,14 +235,21 @@ bool vinyl::setDate(int yr, int mon, int d)
 			if(d>=1 && d<=29)
 				day=d;
 			else
-				return 0;
+			{
+				day=0;
+				return 3;
+			}
 		}
 		else
 		{
 			if(d>=1 && d<=28)
+			
 				day=d;
 			else
-				return 0;
+			{	
+				day=0;
+				return 4;
+			}
 		}
 	}
 	else
@@ -235,9 +257,13 @@ bool vinyl::setDate(int yr, int mon, int d)
 		if (d>=1 && d<=30)
 			day=d;
 		else
-			return 0;	
-	}		
-	return 1;
+		{
+			day=0;
+			return 5;
+		}	
+	}	
+		
+	return 6;
 }
 
 
@@ -330,14 +356,18 @@ void baseVinyl::clearAll()
 	current=-1;
 }
 
-void baseVinyl::addNew(char* art, char* nam, char *edt, char *dist, float pr, char *cond, int yr, int mon, int d) //moze lepiej bool albo int mordo
+int baseVinyl::addNew(char* art, char* nam, char *edt, char *dist, float pr, char *cond, int yr, int mon, int d) 
 {
 	vinyl v;
-	v.setDate(yr, mon, d);
+	int i;
+	i=v.setDate(yr, mon, d);
+	if(i!=6)
+		return i;
 	v.download(art, nam, edt, dist, pr, cond);
 	tab.push_back(v);
 	quantity++;
-	current=quantity-1; 
+	current=quantity-1;
+	return i; 
 } 
 
 
@@ -531,6 +561,8 @@ int baseVinyl::searchPrice(float min, float max)
 		return 3;
 	else if(min>max)
 		return 4;
+	else if(max<min)
+		return 5;
 	else
 	{
 		for(int i=0; i<quantity; i++)
@@ -600,6 +632,55 @@ int baseVinyl::searchArtist(char searchedArtist[])
 		return 0;
 }
 
+void baseVinyl::changeCondition(char oldCond[], char newCond[])
+{
+	for(int i=0; i<quantity; i++)
+	{
+		if ( strcmp( tab[i].getCondition(), oldCond )==0 )
+			tab[i].setCondition(newCond);
+	}
+}
+
+
+int baseVinyl::changePricePercent(float percent, float min, float max)
+{
+	if(min<=0)
+		return 1;
+	else if(max>=2000000)
+		return 2;
+	else if(min>max)
+		return 3;
+	else if(percent<-100)
+		return 4;
+	else if(percent>200)
+		return 5;
+	for(int i=0; i<quantity; i++)
+	{
+		if(tab[i].getPrice()>=min && tab[i].getPrice()<=max)
+			tab[i].setPrice(tab[i].getPrice()+(tab[i].getPrice() * percent/100));
+	}
+	return 6;
+}
+
+int baseVinyl::changePriceNumber(float newPrice, float min, float max)
+{
+	if(min<=0)
+		return 1;
+	else if(max>=2000000)
+		return 2;
+	else if(min>max)
+		return 3;
+	else if(newPrice<0)
+		return 4;
+	else if(newPrice>2000000)
+		return 5;
+	for(int i=0; i<quantity; i++)
+	{
+		if(tab[i].getPrice()>=min && tab[i].getPrice()<=max)
+			tab[i].setPrice(newPrice);
+	}
+	return 6;
+}
 
 vinyl baseVinyl::getVinylFound(int i)
 {
@@ -817,9 +898,9 @@ void baner(int x, int y)
 
 main() 
 {
-	char art[50], nam[20], edt[30], dist[40], cond[10], zn, search[50];
-	float pr;
-	int i, yr, mon, d, min, max;
+	char art[50], nam[40], edt[40], dist[40], cond[10], oldcond[10], zn, search[50];
+	float pr, percent;
+	int i, j, yr, mon, d, min, max;
 	
 	baseVinyl base;
 
@@ -829,15 +910,15 @@ main()
 		baner(0,0);
 		cout<<endl<<"1. Clear all"<<endl;
 		cout<<"2. Add new"<<endl;
-		cout<<"3. Show the whole table"<<endl;
+		cout<<"3. Records list"<<endl;
 		cout<<"4. Sum of all"<<endl;
 		cout<<"5. Save to File"<<endl;
 		cout<<"6. Read to File"<<endl;
-		cout<<"a. Browse through the table."<<endl;
+		cout<<"a. Browse through the records."<<endl;
 		cout<<"b. Set Current"<<endl;
 		cout<<"c. Sorting"<<endl;
 		cout<<"d. Searching"<<endl;
-		cout<<"e. Browse through found elements."<<endl;
+		cout<<"e. Browse through found records."<<endl;
 		cout<<"g. Search and change."<<endl;
 		cout<<"p. Trashbin"<<endl;
 		cout<<"f. Finish"<<endl;
@@ -877,17 +958,32 @@ main()
 				cin.ignore();
 				cout<<"Condition: ";
 				gets(cond);
-				cout<<"Date(dd-mm-yyyy): "<<endl;
-				cout<<"Day: ";
-				cin>>d;
-				cin.ignore();
-				cout<<"Month: ";
-				cin>>mon;
-				cin.ignore();
-				cout<<"Year: ";
-				cin>>yr;
-				cin.ignore();
-				base.addNew(art, nam, edt, dist, pr, cond, yr, mon, d);
+				do
+				{
+					cout<<"Date(dd-mm-yyyy): "<<endl;
+					cout<<"Day: ";
+					cin>>d;
+					cin.ignore();
+					cout<<"Month: ";
+					cin>>mon;
+					cin.ignore();
+					cout<<"Year: ";
+					cin>>yr;
+					cin.ignore();
+					i=base.addNew(art, nam, edt, dist, pr, cond, yr, mon, d);
+					if(i==0)
+						cout<<"Incorrect year. Try again.";
+					if(i==1)
+						cout<<"Incorrect month. Try again.";
+					if(i==2)
+						cout<<"Incorrect day (only between 1-31). Try again.";
+					if(i==3)
+						cout<<"Incorrect day (only between 1-29). Try again.";
+					if(i==4)
+						cout<<"Incorrect day (only between 1-28). Try again.";
+					if(i==5)
+						cout<<"Incorrect day (only between 1-30). Try again.";
+				}while(i!=6);
 				cout<<"Added! Click ENTER to proceed.";
 				getchar();
 				break;
@@ -1005,19 +1101,33 @@ main()
 										cout<<"Condition: ";
 										gets(cond);
 										base.getTab().setCondition(cond);
-										cout<<"Date(dd-mm-yyy): ";
-										cin>>d;
-										cin.ignore();
-										cin>>mon;
-										cin.ignore();
-										cin>>yr;
-										cin.ignore();
-										base.getTab().setDate(yr,mon,d);
+										do
+										{
+											cout<<"Date(dd-mm-yyy): ";
+											cin>>d;
+											cin.ignore();
+											cin>>mon;
+											cin.ignore();
+											cin>>yr;
+											cin.ignore();
+											j=base.getTab().setDate(yr,mon,d);
+											if(j==0)
+												cout<<"Incorrect year. Try again.";
+											if(j==1)
+												cout<<"Incorrect month. Try again.";
+											if(j==2)
+												cout<<"Incorrect day (only between 1-31). Try again.";
+											if(j==3)
+												cout<<"Incorrect day (only between 1-29). Try again.";
+											if(j==4)
+												cout<<"Incorrect day (only between 1-28). Try again.";
+											if(j==5)
+												cout<<"Incorrect day (only between 1-30). Try again.";
+										}while(j!=6);
 										cout<<endl<<"Changed! Press ENTER to continue";
 										getchar();
 										break;
 									case '2':
-										cin.ignore();
 										cout<<"Artist: ";
 										gets(art);
 										base.getTab().setArtist(art);
@@ -1060,14 +1170,32 @@ main()
 										getchar();
 										break;
 									case '8':
-										cout<<"Date(dd-mm-yyy): ";
+										do
+										{
+										cout<<"Date(dd-mm-yyy): "<<endl;
+										cout<<"Day: ";
 										cin>>d;
 										cin.ignore();
+										cout<<"Month: ";
 										cin>>mon;
 										cin.ignore();
+										cout<<"Year: ";
 										cin>>yr;
 										cin.ignore();
-										base.getTab().setDate(yr,mon,d);
+										j=base.getTab().setDate(yr,mon,d);
+										if(j==0)
+											cout<<"Incorrect year. Try again."<<endl;
+										if(j==1)
+											cout<<"Incorrect month. Try again."<<endl;
+										if(j==2)
+											cout<<"Incorrect day (only between 1-31). Try again."<<endl;
+										if(j==3)
+											cout<<"Incorrect day (only between 1-29). Try again."<<endl;
+										if(j==4)
+											cout<<"Incorrect day (only between 1-28). Try again."<<endl;
+										if(j==5)
+											cout<<"Incorrect day (only between 1-30). Try again."<<endl;
+										}while(j!=6);
 										cout<<endl<<"Changed! Press ENTER to continue";
 										getchar();
 										break;
@@ -1261,7 +1389,7 @@ main()
 							break;
 						}
 						writeVinylXY(base.getVinylFound(i), 5, 10);
-						cout<<endl<<"    a - previous                    b - next          d - delete index      t - delete all indexes    l - leave";
+						cout<<endl<<"    a - previous                    b - next       d - delete index      t - delete all indexes    l - leave"<<endl;
 						zn=getch();
 						switch(zn)
 						{
@@ -1306,6 +1434,108 @@ main()
 					}while(zn!='l');
 				}
 				break;
+			
+			case 'g':
+			system("cls");
+			cout<<"What do you want to change?"<<endl;
+			cout<<"1 - Condition \n2 - Price by percent \n3 - Price by number";
+			zn=getch();
+			switch(zn)
+			{
+				case '1':
+					system("cls");
+					cout<<"Enter old condition: ";
+					gets(oldcond);
+					cout<<"Enter new condition: ";
+					gets(cond);
+					base.changeCondition(oldcond, cond);
+					cout<<"Changed. Click ENTER to proceed.";
+					getchar();
+					break;
+				case '2':
+					system("cls");
+					cout<<"Enter price range you seek for \nMinimum: ";
+					cin>>min;
+					cout<<"Maximum: ";
+					cin>>max;
+					cout<<"Enter percent ('-' will be treated as a discount): ";		
+					cin>>percent;
+					i=base.changePricePercent(percent, min, max);
+					if(i==1)
+					{
+						cout<<"Minimum too low! Click ENTER to proceed and try again.";
+						getchar();
+					}
+					else if(i==2)
+					{
+						cout<<"Maximum too high! Click ENTER to proceed and try again.";
+						getchar();
+					}
+					else if(i==3)
+					{
+						cout<<"Maximum is lower than minimum! Click ENTER to proceed and try again.";
+						getchar();
+					}
+					else if(i==4)
+					{
+						cout<<"Percent too small. Can't be below -100. Click ENTER to proceed and try again.";
+						getchar();
+					}
+					else if(i==5)
+					{
+						cout<<"Percent too high. Can't be above 200. Click ENTER to proceed and try again.";
+						getchar();
+					}	
+					else
+					{
+						cout<<"Changed. Click ENTER to proceed.";
+						getchar();
+					}
+					getchar();
+					break;
+				case '3':
+					system("cls");
+					cout<<"Enter price range you seek for \nMinimum: ";
+					cin>>min;
+					cout<<"Maximum: ";
+					cin>>max;
+					cout<<"Enter new price: ";
+					cin>>pr;
+					i=base.changePriceNumber(pr, min, max);
+					if(i==1)
+					{
+						cout<<"Minimum too low! Click ENTER to proceed and try again.";
+						getchar();
+					}
+					else if(i==2)
+					{
+						cout<<"Maximum too high! Click ENTER to proceed and try again.";
+						getchar();
+					}
+					else if(i==3)
+					{
+						cout<<"Maximum is lower than minimum! Click ENTER to proceed and try again.";
+						getchar();
+					}
+					else if(i==4)
+					{
+						cout<<"Price can't be below 0. Click ENTER to proceed and try again.";
+						getchar(); 
+					}
+					else if (i==5)
+					{
+						cout<<"Price can't be more than 2000000. Click ENTER to proceed and try again.";
+						getchar(); 
+					}
+					else
+					{
+						cout<<"Changed. Click ENTER to proceed.";
+						getchar();
+					}
+					getchar();
+					break;
+			}
+			break;
 			
 			case 'p':
 			i=base.getCurrentTrash();
