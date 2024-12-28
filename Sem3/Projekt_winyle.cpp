@@ -4,6 +4,7 @@
 #include <string.h>
 #include <windows.h>
 #include <vector>
+#include <limits>
 
 using namespace std;
 class vinyl 
@@ -39,7 +40,6 @@ class vinyl
 		int   getYear();
 		int   getMonth();
 		int   getDay();
-		float worth();
 };
 
 class baseVinyl 
@@ -99,6 +99,7 @@ class baseVinyl
 		void   nextTrash();
 		void   previousTrash();
 		void   deleteCurrentTrash();
+		void   deleteAllTrash();
 		void   addBackTrash(int i);
 };
 
@@ -107,7 +108,8 @@ class baseVinyl
 
 void gotoxy(int x, int y);
 void writeVinylXY(vinyl t, int x, int y); //lepiej 2 metody (etykiety i wartosci - oddzielnie)
-void baner(int x, int y);
+void baner();
+void hideCursor(); 
 
 
 //metody towar:
@@ -332,12 +334,6 @@ int vinyl::getDay()
 }
 
 
-float vinyl::worth()
-{
-	return price;
-}
-
-
 //metody bazatowar
 baseVinyl::baseVinyl() 
 {
@@ -375,7 +371,7 @@ float baseVinyl::sum()
 {
 	float sum_all=0;
 	for (i=0; i<quantity; i++) //rozmiar jak nie zadziala
-		sum_all+=tab[i].worth();
+		sum_all+=tab[i].getPrice();
 	return sum_all;
 }
 
@@ -818,6 +814,19 @@ void baseVinyl::deleteCurrentTrash()
 }
 		
 
+void baseVinyl::deleteAllTrash()
+{
+	currentTrash=quantityTrash-1;
+	int q=quantityTrash;	
+	for(i=q; i>0; i--)
+	{
+		trash.erase(trash.begin() + currentTrash);
+		currentTrash--;
+		quantityTrash--;
+	}
+										
+
+}
 void baseVinyl::addBackTrash(int i)
 {
 	tab.push_back(trash[i]);
@@ -840,26 +849,50 @@ void gotoxy(int x, int y)
 }
 
 
+void hideCursor() 
+{
+    HANDLE consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
+    CONSOLE_CURSOR_INFO cursorInfo;
+
+    GetConsoleCursorInfo(consoleHandle, &cursorInfo); // Get current cursor settings
+    cursorInfo.bVisible = FALSE;                     // Set cursor visibility to false
+    SetConsoleCursorInfo(consoleHandle, &cursorInfo); // Apply the changes
+}
+
 void writeVinylXY(vinyl t, int x, int y) 
 {
 	gotoxy(x, y);
-	cout<<"------------------------------------------------------------------------------";
+	cout<<"\033[32m------------------------------------------------------------------------------";
 	gotoxy(x, y+1);
-	cout<<"|Artist:						                         |";
+	cout<<"|\033[0mArtist:";
+	gotoxy(x+77, y+1);
+	cout<<"\033[32m|";
 	gotoxy(x, y+2);
-	cout<<"|Name:				    				         |";
+	cout<<"|\033[0mName:";
+	gotoxy(x+77, y+2);
+	cout<<"\033[32m|";
 	gotoxy(x, y+3);
-	cout<<"|Edition:								         |";
+	cout<<"|\033[0mEdition:";
+	gotoxy(x+77, y+3);
+	cout<<"\033[32m|";
 	gotoxy(x, y+4);
-	cout<<"|Distributor:							         |";
+	cout<<"|\033[0mDistributor:";
+	gotoxy(x+77, y+4);
+	cout<<"\033[32m|";
 	gotoxy(x, y+5);
-	cout<<"|Price:						    		         |";
+	cout<<"|\033[0mPrice:";
+	gotoxy(x+77, y+5);
+	cout<<"\033[32m|";
 	gotoxy(x, y+6);
-	cout<<"|Condition:								         |";
+	cout<<"|\033[0mCondition:";
+	gotoxy(x+77, y+6);
+	cout<<"\033[32m|";
 	gotoxy(x, y+7);
-	cout<<"|Data wydania:							         |";
+	cout<<"|\033[0mData wydania:";
+	gotoxy(x+77, y+7);
+	cout<<"\033[32m|";
 	gotoxy(x, y+8);
-	cout<<"------------------------------------------------------------------------------";
+	cout<<"------------------------------------------------------------------------------\033[0m";
 	gotoxy(x+25, y+1);
 	cout<<t.getArtist();
 	gotoxy(x+25, y+2);
@@ -876,51 +909,66 @@ void writeVinylXY(vinyl t, int x, int y)
 	cout<<t.getDay()<<"."<<t.getMonth()<<"."<<t.getYear()<<endl;
 }
 
-void baner(int x, int y)
+void baner()
 {
-	cout<<" __      __  _                   _ ";  
-	cout<<"       _____         _   _                 _     _"<<endl;
-    cout<<" \\ \\    / / (_)                 | |";
-	cout<<"      / ____|       | | | |               | |   (_)"<<endl;
-    cout<<"  \\ \\  / /   _   _ __    _   _  | |";
-    cout<<"     | |       ___  | | | |    _     ___  | |_   _    ___    _ __"<<endl;
-    cout<<"   \\ \\/ /   | | | '_ \\  | | | | | |";
-	cout<<"     | |      / _ \\ | | | |  / _ \\  / __/ | __| | |  / _ \\  | '_ \\ "<<endl;
-    cout<<"    \\  /    | | | | | | | |_| | | |";
-	cout<<"     | |____ | (_) || | | | |  __/ / (__  | |_  | | | (_) | | | | |"<<endl;
-    cout<<"     \\/     |_| |_| |_|  \\__, | |_|";
-	cout<<"      \\_____| \\___/ |_| |_|  \\___|  \\___\\  \\__| |_|  \\___/  |_| |_|"<<endl;
-    cout<<"                          __/ |"<<endl;
-    cout<<"                         |___/"<<endl;	
+	cout<<"\033[35m       __      __  _                   _ ";  
+	cout<<"             _____         _   _                 _     _"<<endl;
+    cout<<"       \\ \\    / / (_)                 | |";
+	cout<<"            / ____|       | | | |               | |   (_)"<<endl;
+    cout<<"        \\ \\  / /   _   _ __    _   _  | |";
+    cout<<"           | |       ___  | | | |    _     ___  | |_   _    ___    _ __"<<endl;
+    cout<<"         \\ \\/ /   | | | '_ \\  | | | | | |";
+	cout<<"           | |      / _ \\ | | | |  / _ \\  / __/ | __| | |  / _ \\  | '_ \\ "<<endl;
+    cout<<"          \\  /    | | | | | | | |_| | | |";
+	cout<<"           | |____ | (_) || | | | |  __/ / (__  | |_  | | | (_) | | | | |"<<endl;
+    cout<<"           \\/     |_| |_| |_|  \\__, | |_|";
+	cout<<"            \\_____| \\___/ |_| |_|  \\___|  \\___\\  \\__| |_|  \\___/  |_| |_|"<<endl;
+    cout<<"                                __/ |"<<endl;
+    cout<<"                               |___/\033[0m"<<endl;	
 }
 
 
 
 main() 
 {
+	hideCursor();
 	char art[50], nam[40], edt[40], dist[40], cond[10], oldcond[10], zn, search[50];
 	float pr, percent;
+	bool check;
 	int i, j, yr, mon, d, min, max;
-	
 	baseVinyl base;
 
 	do 
 	{
 		system("CLS");
-		baner(0,0);
-		cout<<endl<<"1. Clear all"<<endl;
+		baner();
+		gotoxy(48, 10);
+		cout<<"1. Clear all"<<endl;
+		gotoxy(48, 11);
 		cout<<"2. Add new"<<endl;
+		gotoxy(48, 12);
 		cout<<"3. Records list"<<endl;
+		gotoxy(48, 13);
 		cout<<"4. Sum of all"<<endl;
+		gotoxy(48, 14);
 		cout<<"5. Save to File"<<endl;
+		gotoxy(48, 15);
 		cout<<"6. Read to File"<<endl;
+		gotoxy(48, 16);
 		cout<<"a. Browse through the records."<<endl;
+		gotoxy(48, 17);
 		cout<<"b. Set Current"<<endl;
+		gotoxy(48, 18);
 		cout<<"c. Sorting"<<endl;
+		gotoxy(48, 19);
 		cout<<"d. Searching"<<endl;
+		gotoxy(48, 20);
 		cout<<"e. Browse through found records."<<endl;
+		gotoxy(48, 21);
 		cout<<"g. Search and change."<<endl;
+		gotoxy(48, 22);
 		cout<<"p. Trashbin"<<endl;
+		gotoxy(48, 23);
 		cout<<"f. Finish"<<endl;
 
 		zn=getch();
@@ -930,8 +978,10 @@ main()
 		switch(zn) 
 		{
 			case '1':
+				gotoxy(25, 15);
 				cout<<"Are you sure you want to clear the whole table and lose everything?"<<endl;
-				cout<<"y - yes           n - no";
+				gotoxy(45, 16);
+				cout<<"y - yes           n - no"<<endl;
 				zn=getch();
 				switch(zn)
 				{
@@ -945,45 +995,102 @@ main()
 			
 			case '2':
 				fflush(stdin);
+				gotoxy(48, 10);
 				cout<<"Artist: ";
 				gets(art);
+				gotoxy(48, 11);
 				cout<<"Name: ";
 				gets(nam);
+				gotoxy(48, 12);
 				cout<<"Edition: ";
 				gets(edt);
+				gotoxy(48, 13);
 				cout<<"Distributor: ";
 				gets(dist);
-				cout<<"Price: ";
-				cin>>pr;
-				cin.ignore();
+				do
+				{
+					gotoxy(48, 14);
+					cout<<"Price: ";
+					cin>>pr;
+					if(cin.fail())
+					{
+						cin.clear();
+						gotoxy(48, 15);
+						cout<<"Invalid. You can only input a number."<<endl;
+						check=false;
+						cin.ignore();
+						fflush(stdin);
+						gotoxy(48, 14);
+						cout<<"                        ";         
+					}
+					else
+					{
+						check=true;
+						gotoxy(48, 15);
+						cout<<"                                      "<<endl;
+					}
+						fflush(stdin);
+				}while(check==false);
+				gotoxy(48, 15);
 				cout<<"Condition: ";
 				gets(cond);
 				do
 				{
+					gotoxy(48, 16);
 					cout<<"Date(dd-mm-yyyy): "<<endl;
+					gotoxy(48, 17);
+					cout<<"            ";
+					gotoxy(48, 18);
+					cout<<"               ";
+					gotoxy(48, 19);
+					cout<<"              ";
+					gotoxy(48, 17);
 					cout<<"Day: ";
 					cin>>d;
 					cin.ignore();
+					gotoxy(48, 18);
 					cout<<"Month: ";
 					cin>>mon;
 					cin.ignore();
+					gotoxy(48, 19);
 					cout<<"Year: ";
 					cin>>yr;
 					cin.ignore();
 					i=base.addNew(art, nam, edt, dist, pr, cond, yr, mon, d);
 					if(i==0)
+					{
+						gotoxy(48, 20);
 						cout<<"Incorrect year. Try again.";
+					}
 					if(i==1)
+					{
+						gotoxy(48, 20);
 						cout<<"Incorrect month. Try again.";
+					}
 					if(i==2)
+					{
+						gotoxy(48, 20);
 						cout<<"Incorrect day (only between 1-31). Try again.";
+					}
 					if(i==3)
+					{
+						gotoxy(48, 20);
 						cout<<"Incorrect day (only between 1-29). Try again.";
+					}
 					if(i==4)
+					{
+						gotoxy(48, 20);
 						cout<<"Incorrect day (only between 1-28). Try again.";
+					}
 					if(i==5)
+					{
+						gotoxy(48, 20);
 						cout<<"Incorrect day (only between 1-30). Try again.";
+					}
 				}while(i!=6);
+				gotoxy(48, 20);
+				cout<<"                                              ";
+				gotoxy(48, 20);
 				cout<<"Added! Click ENTER to proceed.";
 				getchar();
 				break;
@@ -1007,18 +1114,24 @@ main()
 				break;
 				
 			case '4':
+				gotoxy(48, 15);
 				cout<<"Sum of all: "<<base.sum()<<endl;
+				gotoxy(48, 16);
 				cout<<"Click ENTER to proceed.";
 				getchar();
 				break;
 				
 			case '5':
-				cout<<"Are you sure you want to upwrite the file?"<<endl<<"y - yes           n - no"<<endl;
+				gotoxy(36, 15);
+				cout<<"Are you sure you want to upwrite the file?";
+				gotoxy(45, 16);
+				cout<<"y - yes           n - no"<<endl;
 				zn=getch();
 				switch(zn)
 				{
 					case 'y':
 						base.saveFile();
+						gotoxy(36, 17);
 						cout<<"Saved. Click ENTER to proceed.";
 						getchar();
 						break;
@@ -1028,12 +1141,16 @@ main()
 				break;
 				
 			case '6':
-				cout<<"Are you sure you want to lose your work and open a file?"<<endl<<"y - yes           n - no"<<endl;
+				gotoxy(36, 15);
+				cout<<"Are you sure you want to lose your work and open a file?";
+				gotoxy(45, 16);
+				cout<<"y - yes           n - no"<<endl;
 				zn=getch();
 				switch(zn)
 				{
 					case 'y':
 						base.readFile();
+						gotoxy(36, 17);
 						cout<<"Opened. Click ENTER to proceed.";
 						getchar();
 						break;
@@ -1060,8 +1177,9 @@ main()
 							getchar();
 							break;
 						}
-						writeVinylXY(base.getVinyl(i), 5, 10);
-						cout<<endl<<"    a - previous   b - next   c - change index    d - delete    l - leave";
+						writeVinylXY(base.getVinyl(i), 25, 10);
+						gotoxy(25, 19);
+						cout<<"    a - previous   b - next   c - change index    d - delete    l - leave";
 						zn=getch();
 						switch(zn)
 						{
@@ -1075,128 +1193,233 @@ main()
 								break;	
 							case 'c':
 								system("cls");
+								gotoxy(26, 15);
 								cout<<"Do you want to change the whole index or one of the categories?"<<endl;
+								gotoxy(10, 16);
 								cout<<"1 - all  2 - artist 3 - name 4 - edition  5 - distributor  6 - price  7 - condition  8 - date  9 - leave";
 								zn=getch();
 								system("cls");
 								switch(zn)
 								{
 									case '1':
+										gotoxy(48, 10);
 										cout<<"Artist: ";
 										gets(art);
 										base.getTab().setArtist(art);
+										gotoxy(48, 11);
 										cout<<"Name: ";
 										gets(nam);
 										base.getTab().setName(nam);
+										gotoxy(48, 12);
 										cout<<"Edition: ";
 										gets(edt);
 										base.getTab().setEdition(edt);
+										gotoxy(48, 13);
 										cout<<"Distributor: ";
 										gets(dist);
 										base.getTab().setDistributor(dist);
-										cout<<"Price: ";
-										cin>>pr;
-										base.getTab().setPrice(pr);
-										cin.ignore();
+										do
+										{
+											gotoxy(48, 14);
+											cout<<"Price: ";
+											cin>>pr;
+											if(cin.fail())
+											{
+												cin.clear();
+												gotoxy(48, 15);
+												cout<<"Invalid. You can only input a number."<<endl;
+												check=false;
+												cin.ignore();
+												fflush(stdin);
+												gotoxy(48, 14);
+												cout<<"                        ";         
+											}
+											else
+											{
+												check=true;
+												gotoxy(48, 15);
+												cout<<"                                      "<<endl;
+												base.getTab().setPrice(pr);
+											}
+												fflush(stdin);
+										}while(check==false);
+										gotoxy(48, 15);
 										cout<<"Condition: ";
 										gets(cond);
 										base.getTab().setCondition(cond);
 										do
 										{
-											cout<<"Date(dd-mm-yyy): ";
+											gotoxy(48, 16);
+											cout<<"Date(dd-mm-yyyy): "<<endl;
+											gotoxy(48, 17);
+											cout<<"            ";
+											gotoxy(48, 18);
+											cout<<"               ";
+											gotoxy(48, 19);
+											cout<<"              ";
+											gotoxy(48, 17);
+											cout<<"Day: ";
 											cin>>d;
 											cin.ignore();
+											gotoxy(48, 18);
+											cout<<"Month: ";
 											cin>>mon;
 											cin.ignore();
+											gotoxy(48, 19);
+											cout<<"Year: ";
 											cin>>yr;
 											cin.ignore();
-											j=base.getTab().setDate(yr,mon,d);
-											if(j==0)
+											i=base.getTab().setDate(yr, mon, d);
+											if(i==0)
+											{
+												gotoxy(48, 20);
 												cout<<"Incorrect year. Try again.";
-											if(j==1)
+											}
+											if(i==1)
+											{
+												gotoxy(48, 20);
 												cout<<"Incorrect month. Try again.";
-											if(j==2)
+											}
+											if(i==2)
+											{
+												gotoxy(48, 20);
 												cout<<"Incorrect day (only between 1-31). Try again.";
-											if(j==3)
+											}
+											if(i==3)
+											{
+												gotoxy(48, 20);
 												cout<<"Incorrect day (only between 1-29). Try again.";
-											if(j==4)
+											}
+											if(i==4)
+											{
+												gotoxy(48, 20);
 												cout<<"Incorrect day (only between 1-28). Try again.";
-											if(j==5)
+											}
+											if(i==5)
+											{
+												gotoxy(48, 20);
 												cout<<"Incorrect day (only between 1-30). Try again.";
-										}while(j!=6);
-										cout<<endl<<"Changed! Press ENTER to continue";
+											}
+										}while(i!=6);
+										gotoxy(48, 20);
+										cout<<"                                              ";
+										gotoxy(48, 20);
+										cout<<"Added! Click ENTER to proceed.";
 										getchar();
 										break;
 									case '2':
+										gotoxy(48, 15);
 										cout<<"Artist: ";
 										gets(art);
 										base.getTab().setArtist(art);
-										cout<<endl<<"Changed! Press ENTER to continue";
+										gotoxy(48, 16);
+										cout<<"Changed! Press ENTER to continue";
 										getchar();
 										break;
 									case '3':
+										gotoxy(48, 15);
 										cout<<"Name: ";
 										gets(nam);
 										base.getTab().setName(nam);
-										cout<<endl<<"Changed! Press ENTER to continue";
+										gotoxy(48, 16);
+										cout<<"Changed! Press ENTER to continue";
 										getchar();
 										break;
 									case '4':
+										gotoxy(48, 15);
 										cout<<"Edition: ";
 										gets(edt);
 										base.getTab().setEdition(edt);
-										cout<<endl<<"Changed! Press ENTER to continue";
+										gotoxy(48, 16);
+										cout<<"Changed! Press ENTER to continue";
 										getchar();
 										break;
 									case '5':
+										gotoxy(48, 15);
 										cout<<"Distributor: ";
 										gets(dist);
 										base.getTab().setDistributor(dist);
-										cout<<endl<<"Changed! Press ENTER to continue";
+										gotoxy(48, 16);
+										cout<<"Changed! Press ENTER to continue";
 										getchar();
 										break;
 									case '6':
+										gotoxy(48, 15);
 										cout<<"Price: ";
 										cin>>pr;
 										base.getTab().setPrice(pr);
-										cout<<endl<<"Changed! Press ENTER to continue";
+										gotoxy(48, 16);
+										cout<<"Changed! Press ENTER to continue";
 										getchar();
 										break;
 									case '7':
+										gotoxy(48, 15);
 										cout<<"Condition: ";
 										gets(cond);
 										base.getTab().setCondition(cond);
-										cout<<endl<<"Changed! Press ENTER to continue";
+										gotoxy(48, 16);
+										cout<<"Changed! Press ENTER to continue";
 										getchar();
 										break;
 									case '8':
 										do
 										{
-										cout<<"Date(dd-mm-yyy): "<<endl;
-										cout<<"Day: ";
-										cin>>d;
-										cin.ignore();
-										cout<<"Month: ";
-										cin>>mon;
-										cin.ignore();
-										cout<<"Year: ";
-										cin>>yr;
-										cin.ignore();
-										j=base.getTab().setDate(yr,mon,d);
-										if(j==0)
-											cout<<"Incorrect year. Try again."<<endl;
-										if(j==1)
-											cout<<"Incorrect month. Try again."<<endl;
-										if(j==2)
-											cout<<"Incorrect day (only between 1-31). Try again."<<endl;
-										if(j==3)
-											cout<<"Incorrect day (only between 1-29). Try again."<<endl;
-										if(j==4)
-											cout<<"Incorrect day (only between 1-28). Try again."<<endl;
-										if(j==5)
-											cout<<"Incorrect day (only between 1-30). Try again."<<endl;
-										}while(j!=6);
-										cout<<endl<<"Changed! Press ENTER to continue";
+											gotoxy(48, 15);
+											cout<<"Date(dd-mm-yyyy): "<<endl;
+											gotoxy(48, 16);
+											cout<<"            ";
+											gotoxy(48, 17);
+											cout<<"               ";
+											gotoxy(48, 18);
+											cout<<"              ";
+											gotoxy(48, 16);
+											cout<<"Day: ";
+											cin>>d;
+											cin.ignore();
+											gotoxy(48, 17);
+											cout<<"Month: ";
+											cin>>mon;
+											cin.ignore();
+											gotoxy(48, 18);
+											cout<<"Year: ";
+											cin>>yr;
+											cin.ignore();
+											i=base.getTab().setDate(yr, mon, d);
+											if(i==0)
+											{
+												gotoxy(48, 19);
+												cout<<"Incorrect year. Try again.";
+											}
+											if(i==1)
+											{
+												gotoxy(48, 19);
+												cout<<"Incorrect month. Try again.";
+											}
+											if(i==2)
+											{
+												gotoxy(48, 19);
+												cout<<"Incorrect day (only between 1-31). Try again.";
+											}
+											if(i==3)
+											{
+												gotoxy(48, 19);
+												cout<<"Incorrect day (only between 1-29). Try again.";
+											}
+											if(i==4)
+											{
+												gotoxy(48, 19);
+												cout<<"Incorrect day (only between 1-28). Try again.";
+											}
+											if(i==5)
+											{
+												gotoxy(48, 19);
+												cout<<"Incorrect day (only between 1-30). Try again.";
+											}
+										}while(i!=6);
+										gotoxy(48, 19);
+										cout<<"                                              ";
+										gotoxy(48, 19);
+										cout<<"Added! Click ENTER to proceed.";
 										getchar();
 										break;
 									case '9':
@@ -1204,15 +1427,24 @@ main()
 								}
 								break;
 							case 'd':
-								cout<<endl<<endl<<"        Are you sure you want to delete current index?"<<endl<<"y - yes           n - no"<<endl;
+								gotoxy(35, 21);
+								cout<<"Are you sure you want to delete current index?";
+								gotoxy(45, 22);
+								cout<<"y - yes           n - no"<<endl;
 								zn=getch();
 								switch(zn)
 								{
 									case 'y':
+										gotoxy(35, 21);
+										cout<<"                                                   ";
+										gotoxy(45, 22);
+										cout<<"                         ";
 										i=base.getCurrent();
 										base.deleteCurrent(i);
-										cout<<"Deleted.";
+										gotoxy(44, 21);
+										cout<<"Deleted. Click ENTER to continue.";
 										i=base.getCurrent();
+										getchar();
 										break;
 									case 'n':
 										break;
@@ -1249,13 +1481,16 @@ main()
 				break;
 				
 			case 'f':
+				gotoxy(30, 15);
 				cout<<"Are you sure you want to leave? (Remember to save your work!)."<<endl<<endl;
+				gotoxy(40, 16);
 				cout<<"n - NO			ESC - leave";
 				zn=getch();
 				switch(zn)
 				{
 					case 27:
 						system("cls");
+						gotoxy(55, 15);
 						cout<<"Period.";
 						getchar();
 						break;
@@ -1266,10 +1501,15 @@ main()
 				
 			case 'c': 
 				system("cls");
+				gotoxy(45, 12);
 				cout<<"By which category you want to sort?"<<endl;
+				gotoxy(45, 13);
 				cout<<"1 - Sort by name"<<endl;
+				gotoxy(45, 14);
 				cout<<"2 - Sort by price"<<endl;
+				gotoxy(45, 15);
 				cout<<"3 - Sort by date"<<endl;
+				gotoxy(45, 16);
 				cout<<"l - leave"<<endl;
 				zn=getch();
 				switch(zn)
@@ -1277,18 +1517,21 @@ main()
 					case '1':
 						system("cls");
 						base.sortPrice();
+						gotoxy(45, 15);
 						cout<<"Sorted. Click ENTER to proceed.";
 						getchar();
 						break;
 					case '2':
 						system("cls");
 						base.sortName();
+						gotoxy(45, 15);
 						cout<<"Sorted. Click ENTER to proceed.";
 						getchar();
 						break;
 					case '3':
 						system("cls");
 						base.sortDate();
+						gotoxy(45, 15);
 						cout<<"Sorted. Click ENTER to proceed.";
 						getchar();
 						break;
@@ -1299,67 +1542,93 @@ main()
 					
 			case 'd': 
 				system("cls");
-				cout<<"What do you want to search for?"<<endl;
-				cout<<"1 - Search for an artist"<<endl;
-				cout<<"2 - Search for a name"<<endl;
-				cout<<"3 - Search for a price range"<<endl;
-				cout<<"l - leave"<<endl;
+				gotoxy(45, 12);
+				cout<<"What do you want to search for?";
+				gotoxy(45, 13);
+				cout<<"1 - Search for an artist";
+				gotoxy(45, 14);
+				cout<<"2 - Search for a name";
+				gotoxy(45, 15);
+				cout<<"3 - Search for a price range";
+				gotoxy(45, 16);
+				cout<<"l - leave";
 				zn=getch();
 				switch(zn)
 				{
 					case '1':
 						system("cls");
+						gotoxy(50, 15);
 						cout<<"Artist: ";
 						fflush(stdin);
 						gets(search);
 						i=base.searchArtist(search);
 						if(i==0)
+						{
+							gotoxy(50, 16);
 							cout<<"Not found.";
+						}
 						else
+						{
+							gotoxy(45, 16);
 							cout<<"Found. Click ENTER to proceed.";
+						}
 						getchar();
 						break;
 					case '2':
 						system("cls");
+						gotoxy(50, 15);
 						cout<<"Name: ";
 						fflush(stdin);
 						gets(search);
 						i=base.searchName(search);
 						if(i==0)
+						{
+							gotoxy(50, 16);
 							cout<<"Not found.";
+						}
 						else
+						{
+							gotoxy(45, 16);
 							cout<<"Found. Click ENTER to proceed.";
+						}
 						getchar();
 						break;
 					case '3':
 						system("cls");
+						gotoxy(50, 15);
 						cout<<"Min: ";
 						cin>>min;
+						gotoxy(50, 16);
 						cout<<"Max: ";
 						cin>>max;
 						i=base.searchPrice(min,max);
 						if(i==1)
 						{
+							gotoxy(50, 17);
 							cout<<"Found. Click ENTER to proceed.";
 							getchar();
 						}
 						else if(i==2)
 						{
+							gotoxy(50, 17);
 							cout<<"Minimum too low! Click ENTER to proceed and try again.";
 							getchar();
 						}
 						else if(i==3)
 						{
+							gotoxy(50, 17);
 							cout<<"Maximum too high! Click ENTER to proceed and try again.";
 							getchar();
 						}
 						else if(i==4)
 						{
+							gotoxy(50, 17);
 							cout<<"Maximum is lower than minimum! Click ENTER to proceed and try again.";
 							getchar();
 						}	
 						else
 						{
+							gotoxy(50, 17);
 							cout<<"Nothing found. Click ENTER to proceed.";
 							getchar();
 						}
@@ -1374,6 +1643,7 @@ main()
 			i=base.getCurrentFound();
 				if (i==-1)
 				{
+					gotoxy(50, 15);
 					cout<<"No elements. Click ENTER to proceed."<<endl;
 					getchar();
 				}
@@ -1384,12 +1654,14 @@ main()
 						system("cls");
 						if(base.getCurrentFound()==-1)
 						{
+							gotoxy(50, 15);
 							cout<<"No elements. Click ENTER to leave.";
 							getch();
 							break;
 						}
-						writeVinylXY(base.getVinylFound(i), 5, 10);
-						cout<<endl<<"    a - previous                    b - next       d - delete index      t - delete all indexes    l - leave"<<endl;
+						writeVinylXY(base.getVinylFound(i), 20, 10);
+						gotoxy(12, 19);
+						cout<<"    a - previous     b - next       d - delete index      t - delete all indexes    l - leave"<<endl;
 						zn=getch();
 						switch(zn)
 						{
@@ -1402,29 +1674,47 @@ main()
 								i=base.getCurrentFound();
 								break;	
 							case 'd':
-								cout<<endl<<"Are you sure you want to delete current index?"<<endl<<"y - yes           n - no"<<endl;
+								gotoxy(35, 21);
+								cout<<"Are you sure you want to delete current index?";
+								gotoxy(45, 22);
+								cout<<"y - yes           n - no";
 								zn=getch();
 								switch(zn)
 								{
 									case 'y':
+										gotoxy(35, 21);
+										cout<<"                                                   ";
+										gotoxy(45, 22);
+										cout<<"                         ";
 										base.deleteCurrentFound(i);
-										cout<<"Deleted.";
+										gotoxy(54, 21);
+										cout<<"Deleted. Click ENTER to continue.";
 										i=base.getCurrentFound();
+										getchar();
 										break;
 									case 'n':
 										break;
 								}
 								break;
 							case 't':
-								cout<<endl<<"Are you sure you want to delete all found data?"<<endl<<"y - yes           n - no"<<endl;
+								gotoxy(35, 21);
+								cout<<"Are you sure you want to delete all found data?";
+								gotoxy(45, 22);
+								cout<<"y - yes           n - no";
 								zn=getch();
 								switch(zn)
 								{
 									case 'y':
-										cout<<base.getQuantityFound();
-										getchar();
+										
 										base.deleteAllFound();
+										gotoxy(35, 21);
+										cout<<"                                                   ";
+										gotoxy(45, 22);
+										cout<<"                         ";
+										base.deleteCurrentFound(i);
+										gotoxy(54, 21);
 										cout<<"Deleted. Click ENTER to proceed.";
+										getchar();
 										break;
 									case 'n':
 										break;
@@ -1437,57 +1727,77 @@ main()
 			
 			case 'g':
 			system("cls");
+			gotoxy(45, 12);
 			cout<<"What do you want to change?"<<endl;
-			cout<<"1 - Condition \n2 - Price by percent \n3 - Price by number";
+			gotoxy(45, 13);
+			cout<<"1 - Condition";
+			gotoxy(45, 14);
+			cout<<"2 - Price by percent";
+			gotoxy(45, 15);
+			cout<<"3 - Price by number";
 			zn=getch();
 			switch(zn)
 			{
 				case '1':
 					system("cls");
+					gotoxy(45, 15);
 					cout<<"Enter old condition: ";
 					gets(oldcond);
+					gotoxy(45, 16);
 					cout<<"Enter new condition: ";
 					gets(cond);
 					base.changeCondition(oldcond, cond);
+					gotoxy(45, 17);
 					cout<<"Changed. Click ENTER to proceed.";
 					getchar();
 					break;
 				case '2':
 					system("cls");
-					cout<<"Enter price range you seek for \nMinimum: ";
+					gotoxy(45, 15);
+					cout<<"Enter price range you seek for:";
+					gotoxy(45, 16);
+					cout<<"Minimum: ";
 					cin>>min;
+					gotoxy(45, 17);
 					cout<<"Maximum: ";
 					cin>>max;
+					gotoxy(45, 18);
 					cout<<"Enter percent ('-' will be treated as a discount): ";		
 					cin>>percent;
 					i=base.changePricePercent(percent, min, max);
 					if(i==1)
 					{
+						gotoxy(45, 19);
 						cout<<"Minimum too low! Click ENTER to proceed and try again.";
 						getchar();
 					}
 					else if(i==2)
 					{
+						gotoxy(45, 19);
 						cout<<"Maximum too high! Click ENTER to proceed and try again.";
 						getchar();
 					}
 					else if(i==3)
 					{
+						gotoxy(45, 19);
 						cout<<"Maximum is lower than minimum! Click ENTER to proceed and try again.";
 						getchar();
 					}
 					else if(i==4)
 					{
+						gotoxy(45, 19);
 						cout<<"Percent too small. Can't be below -100. Click ENTER to proceed and try again.";
 						getchar();
 					}
 					else if(i==5)
 					{
+						gotoxy(45, 19);
 						cout<<"Percent too high. Can't be above 200. Click ENTER to proceed and try again.";
 						getchar();
 					}	
 					else
 					{
+						gotoxy(45, 19);
 						cout<<"Changed. Click ENTER to proceed.";
 						getchar();
 					}
@@ -1495,40 +1805,51 @@ main()
 					break;
 				case '3':
 					system("cls");
-					cout<<"Enter price range you seek for \nMinimum: ";
+					gotoxy(45, 15);
+					cout<<"Enter price range you seek for:";
+					gotoxy(45, 16);
+					cout<<"Minimum: ";
 					cin>>min;
+					gotoxy(45, 17);
 					cout<<"Maximum: ";
 					cin>>max;
+					gotoxy(45, 18);
 					cout<<"Enter new price: ";
 					cin>>pr;
 					i=base.changePriceNumber(pr, min, max);
 					if(i==1)
 					{
+						gotoxy(45, 19);
 						cout<<"Minimum too low! Click ENTER to proceed and try again.";
 						getchar();
 					}
 					else if(i==2)
 					{
+						gotoxy(45, 19);
 						cout<<"Maximum too high! Click ENTER to proceed and try again.";
 						getchar();
 					}
 					else if(i==3)
 					{
+						gotoxy(45, 19);
 						cout<<"Maximum is lower than minimum! Click ENTER to proceed and try again.";
 						getchar();
 					}
 					else if(i==4)
 					{
+						gotoxy(45, 19);
 						cout<<"Price can't be below 0. Click ENTER to proceed and try again.";
 						getchar(); 
 					}
 					else if (i==5)
 					{
+						gotoxy(45, 19);
 						cout<<"Price can't be more than 2000000. Click ENTER to proceed and try again.";
 						getchar(); 
 					}
 					else
 					{
+						gotoxy(45, 19);
 						cout<<"Changed. Click ENTER to proceed.";
 						getchar();
 					}
@@ -1541,6 +1862,7 @@ main()
 			i=base.getCurrentTrash();
 			if (i==-1)
 			{
+				gotoxy(43, 15);
 				cout<<"No elements. Click ENTER to proceed."<<endl;
 				getchar();
 			}
@@ -1551,12 +1873,14 @@ main()
 					system("cls");
 					if(base.getCurrentTrash()==-1)
 					{
+						gotoxy(43, 15);
 						cout<<"No elements. Click ENTER to leave.";
 						getch();
 						break;
 					}
-					writeVinylXY(base.getVinylTrash(i), 5, 10);
-					cout<<endl<<"    a - previous          b - next        d - delete index      t - delete all indexes   j - add back   l - leave";
+					writeVinylXY(base.getVinylTrash(i), 20, 10);
+					gotoxy(5, 19);
+					cout<<"    a - previous          b - next        d - delete index      t - delete all indexes   j - add back   l - leave";
 					zn=getch();
 					switch(zn)
 					{
@@ -1569,36 +1893,54 @@ main()
 							i=base.getCurrentTrash();
 							break;	
 						case 'd':
-							cout<<endl<<"Are you sure you want to delete current index?"<<endl<<"y - yes           n - no"<<endl;
+							gotoxy(35, 21);
+							cout<<"Are you sure you want to delete current index?";
+							gotoxy(45, 22);
+							cout<<"y - yes           n - no";
 							zn=getch();
 							switch(zn)
 							{
 								case 'y':
+									gotoxy(35, 21);
+									cout<<"                                                   ";
+									gotoxy(45, 22);
+									cout<<"                         ";
+									gotoxy(54, 21);
 									base.deleteCurrentTrash();
-									cout<<"Deleted.";
+									cout<<"Deleted. Click ENTER to proceed.";
 									i=base.getCurrentTrash();
+									getchar();
 									break;
 								case 'n':
 									break;
 							}
+							break;
 						case 't':
-							cout<<endl<<"Are you sure you want to delete all found data?"<<endl<<"y - yes           n - no"<<endl;
+							gotoxy(35, 21);
+							cout<<"Are you sure you want to delete all found data?";
+							gotoxy(45, 22);
+							cout<<"y - yes           n - no";
 							zn=getch();
 							switch(zn)
 							{
-								case 'y':
-									for(i=0;i<=base.getQuantityTrash();i++)
-									{
-										base.deleteCurrentTrash();
-									}
+								case 'y':	
+									gotoxy(35, 21);
+									cout<<"                                                   ";
+									gotoxy(45, 22);
+									cout<<"                         ";
+									gotoxy(44, 21);																
+									base.deleteAllTrash();
 									cout<<"Deleted. Click ENTER to proceed.";
+									getchar();
 									break;
 								case 'n':
 									break;
 							}
+							break;
 						case 'j':
 							base.addBackTrash(i);
-							cout<<endl<<"Added back. Click ENTER to proceed.";
+							gotoxy(44, 21);
+							cout<<"Added back. Click ENTER to proceed.";
 							getchar();
 							break;
 					}
