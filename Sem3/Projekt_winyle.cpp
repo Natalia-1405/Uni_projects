@@ -78,9 +78,11 @@ class baseVinyl
 		int    searchPrice(float min, float max);	//lepszy bylby int - kod błędu
 		bool   searchName(char searchedName[]);	//j.w.
 		int    searchArtist(char searchedArtist[]);
-		void   changeCondition(char oldCond[], char newCond[]);
+		void   changeArtist(char oldArt[], char newArt[]);
 		int    changePricePercent(float percent, float min, float max);
+		int	   changePricePercentExact(float percent, float oldPrice);
 		int    changePriceNumber(float newPrice, float min, float max);
+		int    changePriceNumberExact(float newPrice, float oldPrice);
 //Znalezione
 		int	   getQuantityFound();
 		int	   getCurrentFound();
@@ -628,18 +630,20 @@ int baseVinyl::searchArtist(char searchedArtist[])
 		return 0;
 }
 
-void baseVinyl::changeCondition(char oldCond[], char newCond[])
+void baseVinyl::changeArtist(char oldArt[], char newArt[])
 {
 	for(int i=0; i<quantity; i++)
 	{
-		if ( strcmp( tab[i].getCondition(), oldCond )==0 )
-			tab[i].setCondition(newCond);
+		if ( strcmp( tab[i].getArtist(), oldArt )==0 )
+			tab[i].setArtist(newArt);
 	}
 }
 
 
 int baseVinyl::changePricePercent(float percent, float min, float max)
 {
+	int j;
+	
 	if(min<=0)
 		return 1;
 	else if(max>=2000000)
@@ -653,13 +657,39 @@ int baseVinyl::changePricePercent(float percent, float min, float max)
 	for(int i=0; i<quantity; i++)
 	{
 		if(tab[i].getPrice()>=min && tab[i].getPrice()<=max)
+		{
 			tab[i].setPrice(tab[i].getPrice()+(tab[i].getPrice() * percent/100));
+			j++;
+		}
 	}
-	return 6;
+	if(j==0)
+		return 6;
+	return 7;
 }
 
+int baseVinyl::changePricePercentExact(float percent, float oldPrice)
+{
+	int j;
+	
+	for(int i=0; i<quantity; i++)
+	{
+		if(tab[i].getPrice()==oldPrice)
+		{
+			tab[i].setPrice(tab[i].getPrice()+(tab[i].getPrice() * percent/100));
+			j++;
+		}
+	}
+	if(j==0)
+		return 0;
+	return 1;
+	
+}
+		
+	
 int baseVinyl::changePriceNumber(float newPrice, float min, float max)
 {
+	int j;
+	
 	if(min<=0)
 		return 1;
 	else if(max>=2000000)
@@ -673,10 +703,34 @@ int baseVinyl::changePriceNumber(float newPrice, float min, float max)
 	for(int i=0; i<quantity; i++)
 	{
 		if(tab[i].getPrice()>=min && tab[i].getPrice()<=max)
+		{
 			tab[i].setPrice(newPrice);
+			j++;
+		}
 	}
-	return 6;
+	if(j==0)
+		return 6;
+	return 7;
 }
+
+
+int baseVinyl::changePriceNumberExact(float newPrice, float oldPrice)
+{	
+	int j;
+	for(int i=0; i<quantity; i++)
+	{
+		if(tab[i].getPrice()==oldPrice)
+		{
+			tab[i].setPrice(newPrice);
+			j++;
+		}
+	}
+	if(j==0)
+		return 0;
+	return 1;	
+}
+
+
 
 vinyl baseVinyl::getVinylFound(int i)
 {
@@ -932,8 +986,8 @@ void baner()
 main() 
 {
 	hideCursor();
-	char art[50], nam[40], edt[40], dist[40], cond[10], oldcond[10], zn, search[50];
-	float pr, percent;
+	char art[50], nam[40], edt[40], dist[40], cond[10], oldart[50], zn, search[50];
+	float pr, percent, oldpr;
 	bool check;
 	int i, j, yr, mon, d, min, max;
 	baseVinyl base;
@@ -1643,7 +1697,7 @@ main()
 			i=base.getCurrentFound();
 				if (i==-1)
 				{
-					gotoxy(50, 15);
+					gotoxy(43, 15);
 					cout<<"No elements. Click ENTER to proceed."<<endl;
 					getchar();
 				}
@@ -1654,7 +1708,7 @@ main()
 						system("cls");
 						if(base.getCurrentFound()==-1)
 						{
-							gotoxy(50, 15);
+							gotoxy(43, 15);
 							cout<<"No elements. Click ENTER to leave.";
 							getch();
 							break;
@@ -1687,7 +1741,7 @@ main()
 										gotoxy(45, 22);
 										cout<<"                         ";
 										base.deleteCurrentFound(i);
-										gotoxy(54, 21);
+										gotoxy(45, 21);
 										cout<<"Deleted. Click ENTER to continue.";
 										i=base.getCurrentFound();
 										getchar();
@@ -1711,8 +1765,7 @@ main()
 										cout<<"                                                   ";
 										gotoxy(45, 22);
 										cout<<"                         ";
-										base.deleteCurrentFound(i);
-										gotoxy(54, 21);
+										gotoxy(45, 21);
 										cout<<"Deleted. Click ENTER to proceed.";
 										getchar();
 										break;
@@ -1730,23 +1783,27 @@ main()
 			gotoxy(45, 12);
 			cout<<"What do you want to change?"<<endl;
 			gotoxy(45, 13);
-			cout<<"1 - Condition";
+			cout<<"1 - Artist";
 			gotoxy(45, 14);
-			cout<<"2 - Price by percent";
+			cout<<"2 - Price by percent (price range)";
 			gotoxy(45, 15);
-			cout<<"3 - Price by number";
+			cout<<"3 - Price by percent (exact price)";
+			gotoxy(45, 16);
+			cout<<"4 - Price by number (price range)";
+			gotoxy(45, 17);
+			cout<<"5 - Price by number (exact price)";
 			zn=getch();
 			switch(zn)
 			{
 				case '1':
 					system("cls");
 					gotoxy(45, 15);
-					cout<<"Enter old condition: ";
-					gets(oldcond);
+					cout<<"Enter old artist: ";
+					gets(oldart);
 					gotoxy(45, 16);
-					cout<<"Enter new condition: ";
-					gets(cond);
-					base.changeCondition(oldcond, cond);
+					cout<<"Enter new artist: ";
+					gets(art);
+					base.changeArtist(oldart, art);
 					gotoxy(45, 17);
 					cout<<"Changed. Click ENTER to proceed.";
 					getchar();
@@ -1794,6 +1851,12 @@ main()
 						gotoxy(45, 19);
 						cout<<"Percent too high. Can't be above 200. Click ENTER to proceed and try again.";
 						getchar();
+					}
+					else if(i==6)
+					{
+						gotoxy(45, 19);
+						cout<<"None found. Click ENTER to proceed.";
+						getchar(); 
 					}	
 					else
 					{
@@ -1804,6 +1867,29 @@ main()
 					getchar();
 					break;
 				case '3':
+					system("cls");
+					gotoxy(45, 15);
+					cout<<"Enter the price you seek for:";
+					cin>>oldpr;
+					gotoxy(45,16);
+					cout<<"Enter percent ('-' will be treated as a discount): ";		
+					cin>>percent;
+					i=base.changePricePercentExact(percent, oldpr);
+					if(i==1)
+					{
+						gotoxy(45,17);
+						cout<<"Changed. Click ENTER to proceed.";
+						getchar();
+					}
+					else
+					{
+						gotoxy(45,17);
+						cout<<"None found. Click ENTER to proceed.";
+						getchar();
+					}
+					getchar();
+					break;
+				case '4':
 					system("cls");
 					gotoxy(45, 15);
 					cout<<"Enter price range you seek for:";
@@ -1847,6 +1933,12 @@ main()
 						cout<<"Price can't be more than 2000000. Click ENTER to proceed and try again.";
 						getchar(); 
 					}
+					else if(i==6)
+					{
+						gotoxy(45, 19);
+						cout<<"None found. Click ENTER to proceed.";
+						getchar(); 
+					}
 					else
 					{
 						gotoxy(45, 19);
@@ -1855,6 +1947,29 @@ main()
 					}
 					getchar();
 					break;
+				case '5':
+					system("cls");
+					gotoxy(45, 15);
+					cout<<"Enter the price you seek for:";
+					cin>>oldpr;
+					gotoxy(45, 16);
+					cout<<"Enter new price: ";
+					cin>>pr;
+					i=base.changePriceNumberExact(pr, oldpr);
+					if(i==1)
+					{
+						gotoxy(45,17);
+						cout<<"Changed. Click ENTER to proceed.";
+						getchar();
+					}
+					else
+					{
+						gotoxy(45,17);
+						cout<<"None found. Click ENTER to proceed.";
+						getchar();
+					}
+					getchar();
+					break;	
 			}
 			break;
 			
