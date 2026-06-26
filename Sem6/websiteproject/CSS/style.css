@@ -1,0 +1,146 @@
+
+body 
+{
+    background-color: #1a1a2e;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+/*Nagłówek*/
+header 
+{
+    background: url(../IMG/R.png);
+    height: 120px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 2px solid #e94560;
+}
+
+/*animacja*/
+img
+{
+    width: 50px;
+    height: 50px;
+    animation: rotate 5s linear 1s infinite;
+}
+
+@keyframes rotate
+{
+    from {}
+    to {transform: rotateY(360deg);}
+}
+
+img:hover
+{
+    animation-play-state: paused;
+}
+
+section 
+{
+    width: 800px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: 0px 30px 30px; 
+    gap: 20px;
+}
+
+section > p 
+{
+    font-size: 25px;
+    color: #e0e0e0;   
+}
+
+div#addnew 
+{
+    width: 700px;
+    border: 2px solid #e94560;
+    border-top-left-radius: 20%;
+    border-bottom-right-radius: 20%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #16213e;
+    padding: 10px;
+}
+
+form 
+{
+    width: 500px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 8px;
+    padding: 20px;
+    border-bottom: 2px solid #e94560;
+}
+
+form div 
+{
+    height: 35px;
+    width: 350px;
+    display: flex;
+    align-items: center;
+}
+
+form div label 
+{
+    color: #a0a0c0;
+    font-size: 14px;
+    border-bottom: 1px solid #e94560;
+    width: 200px;
+}
+
+form div input 
+{
+    height: 32px;
+    width: 250px;
+    background-color: #0f3460;
+    border: 1px solid #e94560;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+form div input::placeholder 
+{
+    color: #606080;
+}
+
+form div input#submit 
+{
+    height: 40px;
+    width: 100px;
+    background-color: #e94560;
+    color: white;
+    border: none;
+    font-size: 15px;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+
+
+form div input#reset 
+{
+    height: 40px;
+    width: 100px;
+    background-color: #0f3460;
+    color: white;
+    border: 1px solid #e94560;
+    font-size: 15px;
+    border-radius: 5px;
+}
+
+
+#info 
+{
+    min-height: 25px;
+}
+
+
