@@ -1,0 +1,105 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\kaktu\\source\\repos\\Labiryntx\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{BB033430-11F4-4D40-8E52-C74F29E9F748}|Labiryntx\\Labiryntx.csproj|c:\\users\\kaktu\\source\\repos\\labiryntx\\labiryntx\\mainform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BB033430-11F4-4D40-8E52-C74F29E9F748}|Labiryntx\\Labiryntx.csproj|solutionrelative:labiryntx\\mainform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BB033430-11F4-4D40-8E52-C74F29E9F748}|Labiryntx\\Labiryntx.csproj|c:\\users\\kaktu\\source\\repos\\labiryntx\\labiryntx\\mainform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "RelativeMoniker": "D:0:0:{BB033430-11F4-4D40-8E52-C74F29E9F748}|Labiryntx\\Labiryntx.csproj|solutionrelative:labiryntx\\mainform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BB033430-11F4-4D40-8E52-C74F29E9F748}|Labiryntx\\Labiryntx.csproj|c:\\users\\kaktu\\source\\repos\\labiryntx\\labiryntx\\maze.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BB033430-11F4-4D40-8E52-C74F29E9F748}|Labiryntx\\Labiryntx.csproj|solutionrelative:labiryntx\\maze.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BB033430-11F4-4D40-8E52-C74F29E9F748}|Labiryntx\\Labiryntx.csproj|c:\\users\\kaktu\\source\\repos\\labiryntx\\labiryntx\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BB033430-11F4-4D40-8E52-C74F29E9F748}|Labiryntx\\Labiryntx.csproj|solutionrelative:labiryntx\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{00000000-0000-0000-0000-000000000000}|\u003CSolution\u003E|Labiryntx||{04B8AB82-A572-4FEF-95CE-5222444B6B64}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BB033430-11F4-4D40-8E52-C74F29E9F748}|Labiryntx\\Labiryntx.csproj|c:\\users\\kaktu\\source\\repos\\labiryntx\\labiryntx\\||{B270807C-D8C6-49EB-8EBE-8E8D566637A1}|5e9a8ac2-4f34-4521-858f-4c248ba31532"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 1,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "MainForm.cs [Projekt]",
+              "DocumentMoniker": "C:\\Users\\kaktu\\source\\repos\\Labiryntx\\Labiryntx\\MainForm.cs",
+              "RelativeDocumentMoniker": "Labiryntx\\MainForm.cs",
+              "ToolTip": "C:\\Users\\kaktu\\source\\repos\\Labiryntx\\Labiryntx\\MainForm.cs [Projekt]",
+              "RelativeToolTip": "Labiryntx\\MainForm.cs [Projekt]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-30T19:37:08.288Z",
+              "EditorCaption": " [Projekt]"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "MainForm.cs",
+              "DocumentMoniker": "C:\\Users\\kaktu\\source\\repos\\Labiryntx\\Labiryntx\\MainForm.cs",
+              "RelativeDocumentMoniker": "Labiryntx\\MainForm.cs",
+              "ToolTip": "C:\\Users\\kaktu\\source\\repos\\Labiryntx\\Labiryntx\\MainForm.cs",
+              "RelativeToolTip": "Labiryntx\\MainForm.cs",
+              "ViewState": "AgIAACwAAAAAAAAAAAAswEEAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-30T19:26:06.072Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\kaktu\\source\\repos\\Labiryntx\\Labiryntx\\Program.cs",
+              "RelativeDocumentMoniker": "Labiryntx\\Program.cs",
+              "ToolTip": "C:\\Users\\kaktu\\source\\repos\\Labiryntx\\Labiryntx\\Program.cs",
+              "RelativeToolTip": "Labiryntx\\Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-30T19:26:11.408Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "Labiryntx",
+              "DocumentMoniker": "C:\\Users\\kaktu\\source\\repos\\Labiryntx\\Labiryntx\\Labiryntx.csproj",
+              "RelativeDocumentMoniker": "Labiryntx\\Labiryntx.csproj",
+              "ToolTip": "C:\\Users\\kaktu\\source\\repos\\Labiryntx\\Labiryntx\\Labiryntx.csproj",
+              "RelativeToolTip": "Labiryntx\\Labiryntx.csproj",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2026-01-30T19:35:29.798Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Maze.cs",
+              "DocumentMoniker": "C:\\Users\\kaktu\\source\\repos\\Labiryntx\\Labiryntx\\Maze.cs",
+              "RelativeDocumentMoniker": "Labiryntx\\Maze.cs",
+              "ToolTip": "C:\\Users\\kaktu\\source\\repos\\Labiryntx\\Labiryntx\\Maze.cs",
+              "RelativeToolTip": "Labiryntx\\Maze.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAFgAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-30T19:25:41.587Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

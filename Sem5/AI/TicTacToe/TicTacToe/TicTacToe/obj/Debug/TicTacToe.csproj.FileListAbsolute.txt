@@ -1,0 +1,9 @@
+C:\Users\kaktu\source\repos\TicTacToe\TicTacToe\bin\Debug\TicTacToe.exe.config
+C:\Users\kaktu\source\repos\TicTacToe\TicTacToe\bin\Debug\TicTacToe.exe
+C:\Users\kaktu\source\repos\TicTacToe\TicTacToe\bin\Debug\TicTacToe.pdb
+C:\Users\kaktu\source\repos\TicTacToe\TicTacToe\obj\Debug\TicTacToe.csproj.AssemblyReference.cache
+C:\Users\kaktu\source\repos\TicTacToe\TicTacToe\obj\Debug\TicTacToe.Properties.Resources.resources
+C:\Users\kaktu\source\repos\TicTacToe\TicTacToe\obj\Debug\TicTacToe.csproj.GenerateResource.cache
+C:\Users\kaktu\source\repos\TicTacToe\TicTacToe\obj\Debug\TicTacToe.csproj.CoreCompileInputs.cache
+C:\Users\kaktu\source\repos\TicTacToe\TicTacToe\obj\Debug\TicTacToe.exe
+C:\Users\kaktu\source\repos\TicTacToe\TicTacToe\obj\Debug\TicTacToe.pdb

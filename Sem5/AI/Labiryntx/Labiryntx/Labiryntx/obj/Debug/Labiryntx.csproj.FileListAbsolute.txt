@@ -1,0 +1,9 @@
+C:\Users\kaktu\source\repos\Labiryntx\Labiryntx\bin\Debug\Labiryntx.exe.config
+C:\Users\kaktu\source\repos\Labiryntx\Labiryntx\bin\Debug\Labiryntx.exe
+C:\Users\kaktu\source\repos\Labiryntx\Labiryntx\bin\Debug\Labiryntx.pdb
+C:\Users\kaktu\source\repos\Labiryntx\Labiryntx\obj\Debug\Labiryntx.csproj.AssemblyReference.cache
+C:\Users\kaktu\source\repos\Labiryntx\Labiryntx\obj\Debug\Labiryntx.Properties.Resources.resources
+C:\Users\kaktu\source\repos\Labiryntx\Labiryntx\obj\Debug\Labiryntx.csproj.GenerateResource.cache
+C:\Users\kaktu\source\repos\Labiryntx\Labiryntx\obj\Debug\Labiryntx.csproj.CoreCompileInputs.cache
+C:\Users\kaktu\source\repos\Labiryntx\Labiryntx\obj\Debug\Labiryntx.exe
+C:\Users\kaktu\source\repos\Labiryntx\Labiryntx\obj\Debug\Labiryntx.pdb
